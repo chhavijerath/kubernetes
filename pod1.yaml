@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deploy <<==== Deployment name. Must be valid DNS name
+spec:
+  replicas: 10 <<==== Number of Pods to deploy & manage
+  selector:
+    matchLabels:
+      app: hello-world
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  minReadySeconds: 10
+  strategy: <<==== This block controls how updates happen
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template: <<==== Below here is the PodTemplate
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+      - name: hello-pod
+        image: nigelpoulton/k8sbook:1.0
+        ports:
+        - containerPort: 808
